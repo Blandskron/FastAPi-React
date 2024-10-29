@@ -1,6 +1,7 @@
-
-from fastapi import FastAPI, Depends, HTTPException, Request, status
+from fastapi import FastAPI, Depends, HTTPException, Request, status, UploadFile, File
 from sqlalchemy.orm import Session
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 import models
 import schemas
 import auth
@@ -15,11 +16,16 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000"],  # Ajusta según necesites
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Configurar la ruta para archivos estáticos (imágenes de perfil)
+media_path = Path("uploads")
+media_path.mkdir(exist_ok=True)  # Crea el directorio "uploads" si no existe
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 def get_db():
     db = SessionLocal()
@@ -61,17 +67,33 @@ def read_users_me(request: Request, db: Session = Depends(get_db)):
     return current_user
 
 @app.put("/users/me/", response_model=schemas.UserInDB)
-def update_user_me(request: Request, user_update: schemas.UserUpdate, db: Session = Depends(get_db)):
+async def update_user_me(
+    request: Request, 
+    last_name: str = None,
+    address: str = None,
+    profile_picture: UploadFile = File(None),
+    db: Session = Depends(get_db)
+):
     session_token = request.headers.get("Authorization")
     if not session_token:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No session token provided")
     current_user = auth.get_current_user_from_session(session_token, db)
-    
-    for var, value in vars(user_update).items():
-        if value is not None:
-            setattr(current_user, var, value)
-    
+
+    # Manejo de archivo de imagen
+    if profile_picture:
+        filename = f"{current_user.id}_{profile_picture.filename}"
+        file_location = media_path / filename
+        with open(file_location, "wb") as buffer:
+            buffer.write(await profile_picture.read())
+        current_user.profile_picture = f"/uploads/{filename}"  # Almacena la ruta relativa
+
+    if last_name is not None:
+        current_user.last_name = last_name
+    if address is not None:
+        current_user.address = address
+
     db.add(current_user)
     db.commit()
     db.refresh(current_user)
+    
     return current_user
