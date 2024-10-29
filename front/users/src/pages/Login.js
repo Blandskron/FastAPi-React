@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../api/api';
 import './Login.css';
 
 const Login = ({ setToken }) => {
   const [formData, setFormData] = useState({ name: '', password: '' });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,6 +18,7 @@ const Login = ({ setToken }) => {
       const data = await loginUser(formData);
       setToken(data.session_token);
       alert('Login successful');
+      navigate('/dashboard');
     } catch (error) {
       console.error(error.response.data);
       alert('Error logging in');

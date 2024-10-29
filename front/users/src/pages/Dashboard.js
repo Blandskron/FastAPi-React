@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchUserData, updateUserData } from '../api/api';
 import { API_URL } from '../api/constants';
+import './Dashboard.css'; // Asegúrate de crear un archivo CSS para los estilos
 
 const Dashboard = ({ token }) => {
   const [userData, setUserData] = useState(null);
@@ -49,23 +50,23 @@ const Dashboard = ({ token }) => {
   };
 
   return (
-    <div className="register-container bg-dark text-light d-flex justify-content-center align-items-center vh-100">
-      <div className="p-4 rounded shadow" style={{ backgroundColor: '#2c2c2c' }}>
+    <div className="dashboard-container">
+      <div className="dashboard-content">
         <h2 className="text-center mb-4">Dashboard</h2>
         {userData ? (
           <div>
-            <p>Name: {userData.name}</p>
-            <p>Email: {userData.email}</p>
-            {userData.last_name && <p>Last Name: {userData.last_name}</p>}
-            {userData.address && <p>Address: {userData.address}</p>}
+            <p><strong>Name:</strong> {userData.name}</p>
+            <p><strong>Email:</strong> {userData.email}</p>
+            {userData.last_name && <p><strong>Last Name:</strong> {userData.last_name}</p>}
+            {userData.address && <p><strong>Address:</strong> {userData.address}</p>}
             {userData.profile_picture && (
               <img
                 src={`${API_URL}${userData.profile_picture}`}
                 alt="Profile"
-                className="img-fluid img-thumbnail mb-3"
+                className="profile-img mb-3"
               />
             )}
-            <button className="btn btn-primary w-100 mb-3" onClick={() => setIsEditing(!isEditing)}>
+            <button className="btn btn-outline-light w-100 mb-3" onClick={() => setIsEditing(!isEditing)}>
               {isEditing ? 'Cancel' : 'Edit Profile'}
             </button>
             {isEditing && (
@@ -91,7 +92,7 @@ const Dashboard = ({ token }) => {
                   className="form-control mb-3"
                   onChange={handleChange}
                 />
-                <button type="submit" className="btn btn-primary w-100">
+                <button type="submit" className="btn btn-outline-light w-100">
                   Update
                 </button>
               </form>

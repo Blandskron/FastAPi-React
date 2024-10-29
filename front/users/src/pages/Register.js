@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../api/api';
-import './Register.css'; // Archivo CSS para personalizaciones adicionales
+import './Register.css';
 
 const Register = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -15,8 +17,9 @@ const Register = () => {
     try {
       await registerUser(formData);
       alert('Registration successful');
+      navigate('/login');
     } catch (error) {
-      console.error(error.response.data); // Para depurar el problema específico
+      console.error(error.response.data);
       alert('Error registering user');
     }
   };

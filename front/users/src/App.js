@@ -1,31 +1,29 @@
-
+// App.js
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Header from './components/Header';
 
 function App() {
   const [token, setToken] = useState(null);
 
+  const handleLogout = () => {
+    setToken(null);
+  };
+
   return (
     <Router>
       <div>
-        <nav>
-          <ul>
-            <li><Link to="/">Home</Link></li>
-            {!token && <li><Link to="/register">Register</Link></li>}
-            {!token && <li><Link to="/login">Login</Link></li>}
-            {token && <li><Link to="/dashboard">Dashboard</Link></li>}
-          </ul>
-        </nav>
+        <Header token={token} handleLogout={handleLogout} />
 
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login setToken={setToken} />} />
-          {token && <Route path="/dashboard" element={<Dashboard token={token} />} />}
+          <Route path="/dashboard" element={token ? <Dashboard token={token} /> : <Navigate to="/login" />} />
         </Routes>
       </div>
     </Router>

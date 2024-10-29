@@ -1,0 +1,28 @@
+/* Header.css */
+.navbar {
+    background-color: #343a40; /* Dark background for navbar */
+  }
+  
+  .navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .navbar-nav .nav-item .nav-link {
+    color: #ffffff; /* White text for links */
+    margin-right: 1rem;
+  }
+  
+  .navbar-nav .nav-item .nav-link:hover {
+    color: #adb5bd; /* Lighter color on hover */
+  }
+  
+  .btn-outline-light {
+    border: 1px solid #ffffff;
+    color: #ffffff;
+  }
+  
+  .btn-outline-light:hover {
+    background-color: #ffffff;
+    color: #212529;
+  }
