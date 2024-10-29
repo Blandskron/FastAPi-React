@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
-import axios from 'axios';
+import { loginUser } from '../api/api';
+import './Login.css';
 
 const Login = ({ setToken }) => {
   const [formData, setFormData] = useState({ name: '', password: '' });
@@ -13,26 +13,28 @@ const Login = ({ setToken }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/login/', formData, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      setToken(response.data.session_token);
+      const data = await loginUser(formData);
+      setToken(data.session_token);
       alert('Login successful');
     } catch (error) {
-      console.error(error.response.data);  // Para depurar el problema específico
+      console.error(error.response.data);
       alert('Error logging in');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
-      <input name="name" placeholder="Username" onChange={handleChange} required />
-      <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
-      <button type="submit">Login</button>
-    </form>
+    <div className="login-container bg-dark text-light d-flex justify-content-center align-items-center vh-100">
+      <form className="p-4 rounded shadow" onSubmit={handleSubmit} style={{ backgroundColor: '#2c2c2c' }}>
+        <h2 className="text-center mb-4">Login</h2>
+        <div className="mb-3">
+          <input type="text" name="name" className="form-control" placeholder="Username" onChange={handleChange} required />
+        </div>
+        <div className="mb-3">
+          <input type="password" name="password" className="form-control" placeholder="Password" onChange={handleChange} required />
+        </div>
+        <button type="submit" className="btn btn-primary w-100">Login</button>
+      </form>
+    </div>
   );
 };
 

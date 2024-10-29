@@ -1,6 +1,6 @@
-
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { fetchUserData, updateUserData } from '../api/api';
+import { API_URL } from '../api/constants';
 
 const Dashboard = ({ token }) => {
   const [userData, setUserData] = useState(null);
@@ -8,20 +8,18 @@ const Dashboard = ({ token }) => {
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
-    const fetchData = async () => {
+    const loadData = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/users/me/', {
-          headers: { Authorization: token },
-        });
-        setUserData(response.data);
-        setFormData(response.data); // Inicializa formData con valores actuales del usuario
+        const data = await fetchUserData(token);
+        setUserData(data);
+        setFormData(data);
       } catch (error) {
         alert('Error fetching user data');
       }
     };
 
     if (token) {
-      fetchData();
+      loadData();
     }
   }, [token]);
 
@@ -41,13 +39,8 @@ const Dashboard = ({ token }) => {
       data.append(key, formData[key]);
     }
     try {
-      const response = await axios.put('http://localhost:8000/users/me/', data, {
-        headers: {
-          Authorization: token,
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      setUserData(response.data);
+      const updatedData = await updateUserData(token, data);
+      setUserData(updatedData);
       setIsEditing(false);
       alert('Profile updated successfully');
     } catch (error) {
@@ -56,46 +49,58 @@ const Dashboard = ({ token }) => {
   };
 
   return (
-    <div>
-      <h2>Dashboard</h2>
-      {userData ? (
-        <div>
-          <p>Name: {userData.name}</p>
-          <p>Email: {userData.email}</p>
-          {userData.last_name && <p>Last Name: {userData.last_name}</p>}
-          {userData.address && <p>Address: {userData.address}</p>}
-          {userData.profile_picture && <img src={`http://localhost:8000${userData.profile_picture}`} alt="Profile" />}
-          {/* Botón para alternar entre visualizar y editar datos */}
-          <button onClick={() => setIsEditing(!isEditing)}>
-            {isEditing ? 'Cancel' : 'Edit Profile'}
-          </button>
-          {isEditing && (
-            <form onSubmit={handleSubmit}>
-              <input 
-                name="last_name" 
-                placeholder="Last Name" 
-                value={formData.last_name || ''} 
-                onChange={handleChange} 
+    <div className="register-container bg-dark text-light d-flex justify-content-center align-items-center vh-100">
+      <div className="p-4 rounded shadow" style={{ backgroundColor: '#2c2c2c' }}>
+        <h2 className="text-center mb-4">Dashboard</h2>
+        {userData ? (
+          <div>
+            <p>Name: {userData.name}</p>
+            <p>Email: {userData.email}</p>
+            {userData.last_name && <p>Last Name: {userData.last_name}</p>}
+            {userData.address && <p>Address: {userData.address}</p>}
+            {userData.profile_picture && (
+              <img
+                src={`${API_URL}${userData.profile_picture}`}
+                alt="Profile"
+                className="img-fluid img-thumbnail mb-3"
               />
-              <input 
-                name="address" 
-                placeholder="Address" 
-                value={formData.address || ''} 
-                onChange={handleChange} 
-              />
-              <input 
-                name="profile_picture" 
-                type="file" 
-                accept="image/*" 
-                onChange={handleChange} 
-              />
-              <button type="submit">Update</button>
-            </form>
-          )}
-        </div>
-      ) : (
-        <p>Loading...</p>
-      )}
+            )}
+            <button className="btn btn-primary w-100 mb-3" onClick={() => setIsEditing(!isEditing)}>
+              {isEditing ? 'Cancel' : 'Edit Profile'}
+            </button>
+            {isEditing && (
+              <form onSubmit={handleSubmit}>
+                <input
+                  name="last_name"
+                  className="form-control mb-3"
+                  placeholder="Last Name"
+                  value={formData.last_name || ''}
+                  onChange={handleChange}
+                />
+                <input
+                  name="address"
+                  className="form-control mb-3"
+                  placeholder="Address"
+                  value={formData.address || ''}
+                  onChange={handleChange}
+                />
+                <input
+                  name="profile_picture"
+                  type="file"
+                  accept="image/*"
+                  className="form-control mb-3"
+                  onChange={handleChange}
+                />
+                <button type="submit" className="btn btn-primary w-100">
+                  Update
+                </button>
+              </form>
+            )}
+          </div>
+        ) : (
+          <p>Loading...</p>
+        )}
+      </div>
     </div>
   );
 };

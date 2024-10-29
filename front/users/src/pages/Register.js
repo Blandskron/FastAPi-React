@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
-import axios from 'axios';
+import { registerUser } from '../api/api';
+import './Register.css'; // Archivo CSS para personalizaciones adicionales
 
 const Register = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
@@ -13,25 +13,30 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8000/register/', formData, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      await registerUser(formData);
       alert('Registration successful');
     } catch (error) {
+      console.error(error.response.data); // Para depurar el problema específico
       alert('Error registering user');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Register</h2>
-      <input name="name" placeholder="Name" onChange={handleChange} required />
-      <input type="email" name="email" placeholder="Email" onChange={handleChange} required />
-      <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
-      <button type="submit">Register</button>
-    </form>
+    <div className="register-container bg-dark text-light d-flex justify-content-center align-items-center vh-100">
+      <form className="p-4 rounded shadow" onSubmit={handleSubmit} style={{ backgroundColor: '#2c2c2c' }}>
+        <h2 className="text-center mb-4">Register</h2>
+        <div className="mb-3">
+          <input type="text" name="name" className="form-control" placeholder="Name" onChange={handleChange} required />
+        </div>
+        <div className="mb-3">
+          <input type="email" name="email" className="form-control" placeholder="Email" onChange={handleChange} required />
+        </div>
+        <div className="mb-3">
+          <input type="password" name="password" className="form-control" placeholder="Password" onChange={handleChange} required />
+        </div>
+        <button type="submit" className="btn btn-primary w-100">Register</button>
+      </form>
+    </div>
   );
 };
 
