@@ -1,11 +1,10 @@
-// App.js
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import Home from './pages/Home';
-import Register from './pages/Register';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import Header from './components/Header';
+import Home from './pages/home/Home';
+import Register from './pages/register/Register';
+import Login from './pages/login/Login';
+import Dashboard from './pages/dashboard/Dashboard';
+import Header from './components/header/Header';
 
 function App() {
   const [token, setToken] = useState(null);

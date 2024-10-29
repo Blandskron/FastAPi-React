@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { fetchUserData, updateUserData } from '../api/api';
-import { API_URL } from '../api/constants';
+import { fetchUserData, updateUserData } from '../../api/api';
+import { API_URL } from '../../api/constants';
 import './Dashboard.css'; // Asegúrate de crear un archivo CSS para los estilos
 
 const Dashboard = ({ token }) => {
