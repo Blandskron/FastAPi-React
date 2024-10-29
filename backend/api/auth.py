@@ -6,7 +6,7 @@ from models import User
 from typing import Optional
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-fake_sessions = {}  # This dictionary will act as a session store
+fake_sessions = {}
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)

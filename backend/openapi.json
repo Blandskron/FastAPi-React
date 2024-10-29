@@ -1,8 +1,9 @@
 {
     "openapi": "3.1.0",
     "info": {
-        "title": "FastAPI",
-        "version": "0.1.0"
+        "title": "Blandskron",
+        "description": "Esta es una API para el manejo de usuarios en mi aplicación web.",
+        "version": "1.0.0"
     },
     "paths": {
         "/register/": {
@@ -51,7 +52,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/UserCreate"
+                                "$ref": "#/components/schemas/UserLogin"
                             }
                         }
                     },
@@ -99,15 +100,34 @@
             "put": {
                 "summary": "Update User Me",
                 "operationId": "update_user_me_users_me__put",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UserUpdate"
-                            }
+                "parameters": [
+                    {
+                        "name": "last_name",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "title": "Last Name"
                         }
                     },
-                    "required": true
+                    {
+                        "name": "address",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "title": "Address"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_update_user_me_users_me__put"
+                            }
+                        }
+                    }
                 },
                 "responses": {
                     "200": {
@@ -136,6 +156,17 @@
     },
     "components": {
         "schemas": {
+            "Body_update_user_me_users_me__put": {
+                "properties": {
+                    "profile_picture": {
+                        "type": "string",
+                        "format": "binary",
+                        "title": "Profile Picture"
+                    }
+                },
+                "type": "object",
+                "title": "Body_update_user_me_users_me__put"
+            },
             "HTTPValidationError": {
                 "properties": {
                     "detail": {
@@ -212,63 +243,36 @@
                         ],
                         "title": "Profile Picture"
                     },
-                    "id": {
-                        "type": "integer",
-                        "title": "Id"
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "title": "Email"
                     }
                 },
                 "type": "object",
                 "required": [
                     "name",
-                    "id"
+                    "email"
                 ],
                 "title": "UserInDB"
             },
-            "UserUpdate": {
+            "UserLogin": {
                 "properties": {
                     "name": {
                         "type": "string",
                         "title": "Name"
                     },
-                    "last_name": {
-                        "anyOf": [
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ],
-                        "title": "Last Name"
-                    },
-                    "address": {
-                        "anyOf": [
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ],
-                        "title": "Address"
-                    },
-                    "profile_picture": {
-                        "anyOf": [
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ],
-                        "title": "Profile Picture"
+                    "password": {
+                        "type": "string",
+                        "title": "Password"
                     }
                 },
                 "type": "object",
                 "required": [
-                    "name"
+                    "name",
+                    "password"
                 ],
-                "title": "UserUpdate"
+                "title": "UserLogin"
             },
             "ValidationError": {
                 "properties": {
